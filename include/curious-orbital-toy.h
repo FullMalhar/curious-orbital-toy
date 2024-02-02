@@ -9,16 +9,19 @@
 
 #define COT_BODYCOUNT 2
 
+// Consistent definition of which number to use
+typedef long double number_t;
+
 // Type container for a 2D vector
 typedef struct 
 {
-    float x, y;
+    number_t x, y;
 } vector2d_t;
 
 // Type container for a point mass body
 typedef struct 
 {
-    float mass;
+    number_t mass;
     vector2d_t position, velocity;
 } body_t;
 

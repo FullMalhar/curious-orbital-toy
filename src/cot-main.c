@@ -1,8 +1,8 @@
 // Curious Orbital Toy
 // Malhar Palkar
 #include <curious-orbital-toy.h>
-#include <glad/glad.h>
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 // Array of orbital bodies
