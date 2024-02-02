@@ -2,7 +2,7 @@
 // Malhar Palkar
 #include <curious-orbital-toy.h>
 
-#include <math.h>
+#include <tgmath.h>
 
 #define COT_PHY_GCONST 6.6743E-11L
 

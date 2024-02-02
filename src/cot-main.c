@@ -2,45 +2,32 @@
 // Malhar Palkar
 #include <curious-orbital-toy.h>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <SFML/Window.h>
 
 // Array of orbital bodies
 body_t scene[COT_BODYCOUNT];
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
 int main(int argc, char **argv)
 {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    sfContextSettings sfCS;
+    sfVideoMode sfVM;
+    sfWindow *pWindow;
 
-    GLFWwindow* gWindow = glfwCreateWindow(800, 600, "Curious Orbital Toy", NULL, NULL);
-    if (!gWindow)
+    sfVM.height = 600;
+    sfVM.width = 800;
+
+    pWindow = sfWindow_create(sfVM, "Curious Orbital Toy", sfDefaultStyle, &sfCS);
+
+    while (sfWindow_isOpen(pWindow))
     {
-        glfwTerminate();
-        return -1;
+        sfEvent sEv;
+
+        while (sfWindow_pollEvent(pWindow, &sEv))
+        {
+            if (sEv.type == sfEvtClosed)
+                sfWindow_close(pWindow);
+        }
     }
 
-    glfwMakeContextCurrent(gWindow);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        return -1;
-    
-    glViewport(0, 0, 800, 600);
-    glfwSetFramebufferSizeCallback(gWindow, framebuffer_size_callback); 
-
-    while(!glfwWindowShouldClose(gWindow))
-    {
-        glfwSwapBuffers(gWindow);
-        glfwPollEvents();    
-    }
-
-    glfwTerminate();
     return 0;
 }
