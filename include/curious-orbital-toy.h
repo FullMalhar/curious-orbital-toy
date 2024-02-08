@@ -9,20 +9,28 @@
 
 #define COT_BODYCOUNT 2
 
-// Consistent definition of which number to use
-typedef long double number_t;
+#include <SFML/Graphics.h>
 
-// Type container for a 2D vector
-typedef struct 
-{
-    number_t x, y;
-} vector2d_t;
+// Consistent definition of which number to use
+typedef float number_t;
 
 // Type container for a point mass body
 typedef struct 
 {
     number_t mass;
-    vector2d_t position, velocity;
+    sfVector2f position, velocity;
 } body_t;
+
+// Draws a series of orbital bodies on the screen
+void cot_dsp_draw(sfRenderWindow *pWindow, body_t *pScene);
+
+// Initialises display objects
+void cot_dsp_init();
+
+// Cleans up display objects
+void cot_dsp_destroy();
+
+// Updates the scene
+void cot_phy_update(body_t *scene, float dt);
 
 #endif // __CURIOUS_ORBITAL_TOY_H
