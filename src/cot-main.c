@@ -25,13 +25,13 @@ int main(int argc, char **argv)
     scene[1].velocity.x = 1.0f;
     scene[1].velocity.y = 1.0f;
 
-
     // Create window
     sfCS.depthBits = 0;
     sfCS.majorVersion = 4;
     sfCS.minorVersion = 5;
     sfCS.sRgbCapable = sfTrue;
     sfCS.stencilBits = 0;
+    sfCS.antialiasingLevel = 0;
     sfVM.height = 600;
     sfVM.width = 800;
     pWindow = sfRenderWindow_create(sfVM, "Curious Orbital Toy", sfDefaultStyle, &sfCS);

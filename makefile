@@ -27,4 +27,4 @@ cot: $(OBJS)
 	$(CC) -o $(OUTDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 clean:
-	rm -f $(shell find $(SRCDIR)/ -type f -name '*.o')
+	rm -f $(shell find $(SRCDIR)/ -type f -name '*.o') $(OUTDIR)/cot
