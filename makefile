@@ -3,28 +3,26 @@
 # Directories
 INCDIR = ./include
 SRCDIR = ./src
-OUTDIR = ./build
 
 # Files
-CFILES = $(shell find $(SRCDIR)/ -type f -name '*.c')
+CFILES = $(shell find $(SRCDIR)/ -type f -name '*.cpp')
 HFILES = $(shell find $(INCDIR)/ -type f -name '*.h')
 
 # Compilers
-CC = gcc
+CC = g++
 
 # Flags
 CFLAGS = -I$(INCDIR)
-LFLAGS = -L$(OUTDIR) -Wl,-rpath '-Wl,$$ORIGIN'
-OBJS = $(patsubst %.c,%.o,$(CFILES))
-LIBS = -lglfw -lm -lcsfml-graphics
+OBJS = $(patsubst %.cpp,%.o,$(CFILES))
+LIBS = -lm -lsfml-graphics -lsfml-window -lsfml-system
 
-%.o: %.c $(HFILES)
+%.o: %.cpp $(HFILES)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 .PHONY: clean
 
 cot: $(OBJS)
-	$(CC) -o $(OUTDIR)/$@ $^ $(LFLAGS) $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
 clean:
-	rm -f $(shell find $(SRCDIR)/ -type f -name '*.o') $(OUTDIR)/cot
+	rm -f $(shell find $(SRCDIR)/ -type f -name '*.o')
