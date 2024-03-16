@@ -1,6 +1,9 @@
 # Compiled file
 cot
 
+# VS code
+.vscode
+
 # Prerequisites
 *.d
 
