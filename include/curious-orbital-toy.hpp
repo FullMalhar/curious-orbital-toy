@@ -33,16 +33,31 @@ namespace cot
         system_t vSystem;
 
     public:
+
+        /**
+         * @param pBods Pointer to array of bodies
+         * @param nBods Number of bodies in array
+        */
         Engine(const body_t *pBods, const std::size_t nBods);
 
-        // Updates the physics for each body
+        /**
+         * @brief Allows the physics engine to update force, velocity, and position of each body in the system
+         * @param dt Time since the update function was last called
+        */
         void update(const math_t dt);
 
-        // Draws each body
+        /**
+         * @brief Draws all bodies in the system in their last updated position
+         * @param wind Reference to drawing window
+        */
         void draw(sf::RenderWindow& wind);
 
-        // Calculates the force between 2 bodies
-        static std::pair<sf::Vector2f, sf::Vector2f> force2(const body_t *bodyA, const body_t *bodyB);
+        /**
+         * @brief Calculates the gravitational attraction force between 2 bodies
+         * @param bodyPair Pair of bodies
+         * @return Pair of force vectors corresponding to input parameter pair
+        */
+        static std::pair<sf::Vector2f, sf::Vector2f> force2(const std::pair<body_t, body_t>& bodyPair);
     };
 }
 
