@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <tuple>
 #include <vector>
 
 namespace cot
@@ -21,8 +22,11 @@ namespace cot
         sf::Vector2f position, velocity;
     } body_t;
 
-    // Representation of a system
-    typedef std::vector<std::pair<body_t, sf::CircleShape>> system_t;
+    /**
+     * @brief Datatype representing the system, consisting of array of tuple
+     * @details Tuple contains (1) body data, (2) circle shape, (3) force vector arrow shape
+    */
+    typedef std::vector<std::tuple<body_t, sf::CircleShape, sf::ConvexShape>> system_t;
     
     // Physics engine
     class Engine
@@ -51,13 +55,6 @@ namespace cot
          * @param wind Reference to drawing window
         */
         void draw(sf::RenderWindow& wind);
-
-        /**
-         * @brief Calculates the gravitational attraction force between 2 bodies
-         * @param bodyPair Pair of bodies
-         * @return Pair of force vectors corresponding to input parameter pair
-        */
-        static std::pair<sf::Vector2f, sf::Vector2f> force2(const std::pair<body_t, body_t>& bodyPair);
     };
 }
 
