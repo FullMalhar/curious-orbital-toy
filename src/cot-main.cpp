@@ -4,11 +4,6 @@
 
 #include <chrono>
 
-static const cot::body_t bodyArr[] = {
-    {100.0f, {300.0f, 300.0f}, {0.0f, 0.0f}},
-    {5.0f, {10.0f, 10.0f}, {50.0f, 0.0f}}
-};
-
 int main(int argc, char **argv)
 {
     // Create window objects
@@ -19,8 +14,12 @@ int main(int argc, char **argv)
     std::chrono::time_point<std::chrono::system_clock> tBegin, tEnd;
     tBegin = std::chrono::system_clock::now();
 
-    // Initialise engine
-    cot::Engine pEng(bodyArr, sizeof(bodyArr) / sizeof(cot::body_t));
+    // Initialise engine with bodies from configuration
+    cot::Engine pEng;
+    cot::math_t cfg_mass;
+    sf::Vector2f cfg_pos, cfg_vel;
+    while (cot::cfgGetNextBody(cfg_mass, cfg_pos, cfg_vel))
+        pEng.addBody(cfg_mass, cfg_pos, cfg_vel);
 
     // Program loop
     while (sfWindow.isOpen())

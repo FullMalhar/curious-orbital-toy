@@ -4,6 +4,10 @@
 
 #include <ctgmath>
 
+// Graphics template objects
+static sf::CircleShape template_cShape;
+static sf::ConvexShape template_cArrow;
+
 /**
  * @brief Calculates the gravitational attraction force between 2 bodies
  * @param bodyPair Pair of bodies
@@ -62,36 +66,22 @@ inline cot::math_t forceAngle(const sf::Vector2f& fVect)
         - (sgn(fVect.x * fVect.y) * std::atan((std::abs(fVect.x) - std::abs(fVect.y)) / (std::abs(fVect.x) + std::abs(fVect.y))))));
 }
 
-cot::Engine::Engine(const body_t *pBods, const std::size_t nBods)
+cot::Engine::Engine()
 {
     // Generic circle shape to represent each body
-    sf::CircleShape cShape;
-    cShape.setFillColor(sf::Color::Yellow);
+    template_cShape.setFillColor(sf::Color::Yellow);
 
     // Generic arrow shape to represent each body
-    sf::ConvexShape cArrow;
-    cArrow.setPointCount(7);
-    cArrow.setPoint(0, sf::Vector2f(0.0f, -1.0f));
-    cArrow.setPoint(1, sf::Vector2f(4.0f, -1.0f));
-    cArrow.setPoint(2, sf::Vector2f(4.0f, -3.0f));
-    cArrow.setPoint(3, sf::Vector2f(6.0f, 0.0f));
-    cArrow.setPoint(4, sf::Vector2f(4.0f, 3.0f));
-    cArrow.setPoint(5, sf::Vector2f(4.0f, 1.0f));
-    cArrow.setPoint(6, sf::Vector2f(0.0f, 1.0f));
-    cArrow.setOrigin(0.0f, 0.0f);
-    cArrow.setScale(5.0f, 5.0f);
-
-    // Add each body to the vector
-    for (auto i = 0; i < nBods; i++)
-    {
-        body_t cBody = *(pBods + i);
-
-        // Set radius based on mass and adjust origin to center
-        cShape.setRadius(cBody.mass);
-        cShape.setOrigin(cShape.getRadius(), cShape.getRadius());
-
-        this->vSystem.push_back(std::make_tuple(cBody, cShape, cArrow));
-    }
+    template_cArrow.setPointCount(7);
+    template_cArrow.setPoint(0, sf::Vector2f(0.0f, -1.0f));
+    template_cArrow.setPoint(1, sf::Vector2f(4.0f, -1.0f));
+    template_cArrow.setPoint(2, sf::Vector2f(4.0f, -3.0f));
+    template_cArrow.setPoint(3, sf::Vector2f(6.0f, 0.0f));
+    template_cArrow.setPoint(4, sf::Vector2f(4.0f, 3.0f));
+    template_cArrow.setPoint(5, sf::Vector2f(4.0f, 1.0f));
+    template_cArrow.setPoint(6, sf::Vector2f(0.0f, 1.0f));
+    template_cArrow.setOrigin(0.0f, 0.0f);
+    template_cArrow.setScale(5.0f, 5.0f);
 }
 
 void cot::Engine::update(const cot::math_t dt)
@@ -105,7 +95,7 @@ void cot::Engine::update(const cot::math_t dt)
         for (std::size_t j = 0; j < i; j++)
         {
             // Calculate force interaction between the 2 bodies
-            std::pair<sf::Vector2f, sf::Vector2f> vForcePair = force2(std::make_pair(std::get<0>(this->vSystem[i]), std::get<0>(this->vSystem[j])));
+            std::pair<sf::Vector2f, sf::Vector2f> vForcePair = force2(std::make_pair(this->vSystem[i], this->vSystem[j]));
 
             // Add force interaction to the system force vector
             vForces[i].x += vForcePair.first.x;     vForces[i].y += vForcePair.first.y;
@@ -117,28 +107,27 @@ void cot::Engine::update(const cot::math_t dt)
     for (std::size_t i = 0; i < this->vSystem.size(); i++)
     {
         // Calculate position movement due to velocity
-        std::get<0>(this->vSystem[i]).position.x += std::get<0>(this->vSystem[i]).velocity.x * dt;
-        std::get<0>(this->vSystem[i]).position.y += std::get<0>(this->vSystem[i]).velocity.y * dt;
+        this->vSystem[i].position.x += this->vSystem[i].velocity.x * dt;
+        this->vSystem[i].position.y += this->vSystem[i].velocity.y * dt;
 
         // Calculate next velocity based on force
-        std::get<0>(this->vSystem[i]).velocity.x += vForces[i].x * dt / std::get<0>(this->vSystem[i]).mass;
-        std::get<0>(this->vSystem[i]).velocity.y += vForces[i].y * dt / std::get<0>(this->vSystem[i]).mass;
+        this->vSystem[i].velocity.x += vForces[i].x * dt / this->vSystem[i].mass;
+        this->vSystem[i].velocity.y += vForces[i].y * dt / this->vSystem[i].mass;
 
         // Update force angle
         math_t forceVectorAngle = forceAngle(vForces[i]);
 
         // Update position from body object to circle shape
-        std::get<1>(this->vSystem[i]).setPosition(std::get<0>(this->vSystem[i]).position);
+        this->vSystem[i].planet.setPosition(this->vSystem[i].position);
 
         // Transform arrow to face the force vector
-        std::get<2>(this->vSystem[i]).setRotation(forceVectorAngle * 180.0f / M_PI);
+        this->vSystem[i].arrow.setRotation(forceVectorAngle * 180.0f / M_PI);
 
         // Place arrow on the edge of the mass
-        std::get<1>(this->vSystem[i]).getRadius();
-        std::get<2>(this->vSystem[i]).setPosition(std::get<0>(this->vSystem[i]).position);
-        std::get<2>(this->vSystem[i]).move(
-            std::get<1>(this->vSystem[i]).getRadius() * std::cos(forceVectorAngle), 
-            std::get<1>(this->vSystem[i]).getRadius() * std::sin(forceVectorAngle));
+        this->vSystem[i].arrow.setPosition(this->vSystem[i].position);
+        this->vSystem[i].arrow.move(
+            this->vSystem[i].planet.getRadius() * std::cos(forceVectorAngle), 
+            this->vSystem[i].planet.getRadius() * std::sin(forceVectorAngle));
     }
 }
 
@@ -148,10 +137,21 @@ void cot::Engine::draw(sf::RenderWindow& wind)
     for (auto& cBod : this->vSystem)
     {
         // Draw objects
-        wind.draw(std::get<1>(cBod));
-        wind.draw(std::get<2>(cBod));
+        wind.draw(cBod.planet);
+        wind.draw(cBod.arrow);
     }
 }
 
+void cot::Engine::addBody(math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel)
+{
+    // Create body and push into vector
+    body_t newBod;
+    newBod.arrow = template_cArrow;
+    newBod.mass = in_mass;
+    newBod.planet = template_cShape;
+    newBod.position = init_pos;
+    newBod.velocity = init_vel;
+    this->vSystem.push_back(newBod);
+}
 
 

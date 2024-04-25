@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <tuple>
+#include <memory>
 #include <vector>
 
 namespace cot
@@ -18,15 +18,20 @@ namespace cot
     // Representation of a physical body
     typedef struct _body
     {
-        math_t mass;
-        sf::Vector2f position, velocity;
+        math_t              mass;       // Mass of body (used to determine radius)
+        sf::Vector2f        position;   // Position of body (pixels)
+        sf::Vector2f        velocity;   // Velocity of body (pixels/sec)
+        sf::CircleShape     planet;     // Circular body object
+        sf::ConvexShape     arrow;      // Force vector arrow
     } body_t;
 
+    // Representation of a list of bodies
+    typedef std::vector<cot::body_t> system_t;
+
     /**
-     * @brief Datatype representing the system, consisting of array of tuple
-     * @details Tuple contains (1) body data, (2) circle shape, (3) force vector arrow shape
+     * @brief Returns the next body in the configuration file
     */
-    typedef std::vector<std::tuple<body_t, sf::CircleShape, sf::ConvexShape>> system_t;
+    unsigned int cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
     
     // Physics engine
     class Engine
@@ -37,12 +42,15 @@ namespace cot
         system_t vSystem;
 
     public:
+        Engine();
 
         /**
-         * @param pBods Pointer to array of bodies
-         * @param nBods Number of bodies in array
+         * @brief Adds a body to the physics engine
+         * @param in_mass Mass of the body
+         * @param init_pos Initial position (pixels) of the body
+         * @param init_vel Initial velocity (pixels/sec) of the body
         */
-        Engine(const body_t *pBods, const std::size_t nBods);
+        void addBody(math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel);
 
         /**
          * @brief Allows the physics engine to update force, velocity, and position of each body in the system
