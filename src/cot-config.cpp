@@ -2,6 +2,8 @@
 // Malhar Palkar
 #include <curious-orbital-toy.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <fstream>
 #include <sstream>
 
@@ -65,6 +67,6 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
         return 1;
     }
     
-    spdlog::error("No bodies specified in config file.");
+    spdlog::debug("No bodies specified in remainder of config file.");
     return 0;
 }

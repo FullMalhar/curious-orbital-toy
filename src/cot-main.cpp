@@ -2,6 +2,8 @@
 // Malhar Palkar
 #include <curious-orbital-toy.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <chrono>
 
 int main(int argc, char **argv)
@@ -28,7 +30,7 @@ int main(int argc, char **argv)
     while (cot::cfgGetNextBody(cfg_mass, cfg_pos, cfg_vel))
     {
         pEng.addBody(cfg_mass, cfg_pos, cfg_vel);
-        spdlog::debug("Added body with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2}).", 
+        spdlog::info("Added body with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2}).", 
             cfg_mass, cfg_pos.x, cfg_pos.y, cfg_vel.x, cfg_vel.y);
     }
 

@@ -7,8 +7,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <spdlog/spdlog.h>
-
 #include <memory>
 #include <vector>
 
@@ -44,7 +42,6 @@ namespace cot
         system_t vSystem;
 
     public:
-        Engine();
 
         /**
          * @brief Adds a body to the physics engine

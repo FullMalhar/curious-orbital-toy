@@ -4,10 +4,6 @@
 
 #include <ctgmath>
 
-// Graphics template objects
-static sf::CircleShape template_cShape;
-static sf::ConvexShape template_cArrow;
-
 /**
  * @brief Calculates the gravitational attraction force between 2 bodies
  * @param bodyPair Pair of bodies
@@ -64,24 +60,6 @@ inline cot::math_t forceAngle(const sf::Vector2f& fVect)
         - ((M_PI / 2.0f) * (1.0f + sgn(fVect.x)) * (1 - sgn(std::pow(fVect.y, 2.0f))))
         - ((M_PI / 4.0f) * (2.0f + sgn(fVect.x)) * sgn(fVect.y))
         - (sgn(fVect.x * fVect.y) * std::atan((std::abs(fVect.x) - std::abs(fVect.y)) / (std::abs(fVect.x) + std::abs(fVect.y))))));
-}
-
-cot::Engine::Engine()
-{
-    // Generic circle shape to represent each body
-    template_cShape.setFillColor(sf::Color::Yellow);
-
-    // Generic arrow shape to represent each body
-    template_cArrow.setPointCount(7);
-    template_cArrow.setPoint(0, sf::Vector2f(0.0f, -1.0f));
-    template_cArrow.setPoint(1, sf::Vector2f(4.0f, -1.0f));
-    template_cArrow.setPoint(2, sf::Vector2f(4.0f, -3.0f));
-    template_cArrow.setPoint(3, sf::Vector2f(6.0f, 0.0f));
-    template_cArrow.setPoint(4, sf::Vector2f(4.0f, 3.0f));
-    template_cArrow.setPoint(5, sf::Vector2f(4.0f, 1.0f));
-    template_cArrow.setPoint(6, sf::Vector2f(0.0f, 1.0f));
-    template_cArrow.setOrigin(0.0f, 0.0f);
-    template_cArrow.setScale(5.0f, 5.0f);
 }
 
 void cot::Engine::update(const cot::math_t dt)
@@ -144,13 +122,30 @@ void cot::Engine::draw(sf::RenderWindow& wind)
 
 void cot::Engine::addBody(math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel)
 {
-    // Create body and push into vector
+    // Create body based on mass and initial data
     body_t newBod;
-    newBod.arrow = template_cArrow;
     newBod.mass = in_mass;
-    newBod.planet = template_cShape;
     newBod.position = init_pos;
     newBod.velocity = init_vel;
+
+    // Setup body graphics object
+    newBod.planet.setFillColor(sf::Color::Yellow);
+    newBod.planet.setRadius(in_mass);
+    newBod.planet.setOrigin(in_mass / 2.0f, in_mass / 2.0f);
+
+    // Setup force vector arrow object
+    newBod.arrow.setPointCount(7);
+    newBod.arrow.setPoint(0, sf::Vector2f(0.0f, -1.0f));
+    newBod.arrow.setPoint(1, sf::Vector2f(4.0f, -1.0f));
+    newBod.arrow.setPoint(2, sf::Vector2f(4.0f, -3.0f));
+    newBod.arrow.setPoint(3, sf::Vector2f(6.0f, 0.0f));
+    newBod.arrow.setPoint(4, sf::Vector2f(4.0f, 3.0f));
+    newBod.arrow.setPoint(5, sf::Vector2f(4.0f, 1.0f));
+    newBod.arrow.setPoint(6, sf::Vector2f(0.0f, 1.0f));
+    newBod.arrow.setOrigin(0.0f, 0.0f);
+    newBod.arrow.setScale(5.0f, 5.0f);
+
+    // Add new body to vector
     this->vSystem.push_back(newBod);
 }
 
