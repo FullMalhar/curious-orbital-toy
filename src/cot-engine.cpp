@@ -62,6 +62,15 @@ inline cot::math_t forceAngle(const sf::Vector2f& fVect)
         - (sgn(fVect.x * fVect.y) * std::atan((std::abs(fVect.x) - std::abs(fVect.y)) / (std::abs(fVect.x) + std::abs(fVect.y))))));
 }
 
+/**
+ * @brief Maps body mass to graphical radius
+ * @param in_mass Mass of body to map
+*/
+inline cot::math_t mass2rad(cot::math_t in_mass)
+{
+    return 20.0f * std::log((in_mass / 2.0f) + 1.0f);
+}
+
 void cot::Engine::update(const cot::math_t dt)
 {
     // List of forces for each object in the system
@@ -130,8 +139,9 @@ void cot::Engine::addBody(math_t in_mass, sf::Vector2f init_pos, sf::Vector2f in
 
     // Setup body graphics object
     newBod.planet.setFillColor(sf::Color::Yellow);
-    newBod.planet.setRadius(in_mass);
-    newBod.planet.setOrigin(in_mass / 2.0f, in_mass / 2.0f);
+    cot::math_t radius = mass2rad(in_mass);
+    newBod.planet.setRadius(radius);
+    newBod.planet.setOrigin(radius, radius);
 
     // Setup force vector arrow object
     newBod.arrow.setPointCount(7);
