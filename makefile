@@ -14,7 +14,7 @@ CC = g++
 # Flags
 CFLAGS = -I$(INCDIR)
 OBJS = $(patsubst %.cpp,%.o,$(CFILES))
-LIBS = -lm -lsfml-graphics -lsfml-window -lsfml-system
+LIBS = -lm -lsfml-graphics -lsfml-window -lsfml-system -lfmt
 
 %.o: %.cpp $(HFILES)
 	$(CC) -c -o $@ $< $(CFLAGS)

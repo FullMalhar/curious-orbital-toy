@@ -17,16 +17,22 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
         std::stringstream isConfig;
 
         // Try to open configuration file
+        spdlog::debug("Opening config file.");
         fConfig.open("cot.csv", std::ios::in);
         if (!fConfig.is_open())
+        {
+            spdlog::error("Unable to open config file.");
             return 0;
+        }
 
         // Read contents of configuration file into string and new stream
+        spdlog::debug("Reading contents of configuration file.");
         isConfig << fConfig.rdbuf();
         sConfig = isConfig.str();
         strConfig.str(sConfig);
 
         // Close everything
+        spdlog::debug("Closing config file.");
         fConfig.close();
     }
 
@@ -34,16 +40,19 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
     std::string cLine;
     if (std::getline(strConfig, cLine))
     {
+        spdlog::debug("Read config line '{0}'", cLine);
+
         // Check if line contains another body
-        size_t pos = 0;
         std::vector<std::string> vTokens;
-        while ((pos = cLine.find(',')) != std::string::npos)
+        for (size_t pos = 0; (pos = cLine.find(',')) != std::string::npos; cLine.erase(0, pos + 1))
         {
             vTokens.push_back(cLine.substr(0, pos));
-            cLine.erase(0, pos + 1);
         }
         if (vTokens.size() != 5)
+        {
+            spdlog::error("Incorrectly read {0:d} tokens.", vTokens.size());
             return 0;
+        }
     
         // Extract body data
         out_mass = std::stof(vTokens[0]);
@@ -51,8 +60,11 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
         out_pos.y = std::stof(vTokens[2]);
         out_vel.x = std::stof(vTokens[3]);
         out_vel.y = std::stof(vTokens[4]);
+        spdlog::debug("Read mass {:.2f} init position ({:.2f},{:.2f}) init velocity ({:.2f},{:.2f})", 
+            out_mass, out_pos.x, out_pos.y, out_vel.x, out_vel.y);
         return 1;
     }
     
+    spdlog::error("No bodies specified in config file.");
     return 0;
 }

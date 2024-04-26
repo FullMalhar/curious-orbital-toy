@@ -7,6 +7,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <memory>
 #include <vector>
 
