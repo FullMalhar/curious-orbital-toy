@@ -4,17 +4,20 @@
 
 #include <spdlog/spdlog.h>
 
+#include <spdlog/sinks/basic_file_sink.h>
+
 #include <chrono>
 
 int main(int argc, char **argv)
 {
     // Set up logger to be really verbose
-    spdlog::set_level(spdlog::level::debug);
+    auto logger = spdlog::basic_logger_mt("logger", "cot.log");
+    logger->set_level(spdlog::level::debug);
 
     // Create window objects
     sf::RenderWindow sfWindow(sf::VideoMode(800, 600), "Curious Orbital Toy");
     sfWindow.setVerticalSyncEnabled(true);
-    spdlog::debug("Created window.");
+    logger->debug("Created window.");
 
     // Timing objects
     std::chrono::time_point<std::chrono::system_clock> tBegin, tEnd;
@@ -22,15 +25,15 @@ int main(int argc, char **argv)
 
     // Initialise engine
     cot::Engine pEng;
-    spdlog::debug("Initialised engine.");
+    logger->debug("Initialised engine.");
 
     // Add bodies from configuration
     cot::math_t cfg_mass;
     sf::Vector2f cfg_pos, cfg_vel;
-    while (cot::cfgGetNextBody(cfg_mass, cfg_pos, cfg_vel))
+    while (cot::cfgGetNextBody(logger, cfg_mass, cfg_pos, cfg_vel))
     {
         pEng.addBody(cfg_mass, cfg_pos, cfg_vel);
-        spdlog::info("Added body with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2}).", 
+        logger->info("Added body with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2}).", 
             cfg_mass, cfg_pos.x, cfg_pos.y, cfg_vel.x, cfg_vel.y);
     }
 

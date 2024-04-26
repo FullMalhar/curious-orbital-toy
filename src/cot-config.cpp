@@ -2,15 +2,13 @@
 // Malhar Palkar
 #include <curious-orbital-toy.hpp>
 
-#include <spdlog/spdlog.h>
-
 #include <fstream>
 #include <sstream>
 
 static std::string sConfig;
 static std::stringstream strConfig;
 
-unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
+unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
 {
     // Check if configuration file has been read
     if (sConfig.length() <= 0)
@@ -19,22 +17,22 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
         std::stringstream isConfig;
 
         // Try to open configuration file
-        spdlog::debug("Opening config file.");
+        logger->debug("Opening config file.");
         fConfig.open("cot.csv", std::ios::in);
         if (!fConfig.is_open())
         {
-            spdlog::error("Unable to open config file.");
+            logger->error("Unable to open config file.");
             return 0;
         }
 
         // Read contents of configuration file into string and new stream
-        spdlog::debug("Reading contents of configuration file.");
+        logger->debug("Reading contents of configuration file.");
         isConfig << fConfig.rdbuf();
         sConfig = isConfig.str();
         strConfig.str(sConfig);
 
         // Close everything
-        spdlog::debug("Closing config file.");
+        logger->debug("Closing config file.");
         fConfig.close();
     }
 
@@ -42,7 +40,7 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
     std::string cLine;
     if (std::getline(strConfig, cLine))
     {
-        spdlog::debug("Read config line '{0}'", cLine);
+        logger->debug("Read config line '{0}'", cLine);
 
         // Check if line contains another body
         std::vector<std::string> vTokens;
@@ -52,7 +50,7 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
         }
         if (vTokens.size() != 5)
         {
-            spdlog::error("Incorrectly read {0:d} tokens.", vTokens.size());
+            logger->error("Incorrectly read {0:d} tokens.", vTokens.size());
             return 0;
         }
     
@@ -62,11 +60,11 @@ unsigned int cot::cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Ve
         out_pos.y = std::stof(vTokens[2]);
         out_vel.x = std::stof(vTokens[3]);
         out_vel.y = std::stof(vTokens[4]);
-        spdlog::debug("Read mass {:.2f} init position ({:.2f},{:.2f}) init velocity ({:.2f},{:.2f})", 
+        logger->debug("Read mass {:.2f} init position ({:.2f},{:.2f}) init velocity ({:.2f},{:.2f})", 
             out_mass, out_pos.x, out_pos.y, out_vel.x, out_vel.y);
         return 1;
     }
     
-    spdlog::debug("No bodies specified in remainder of config file.");
+    logger->debug("No bodies specified in remainder of config file.");
     return 0;
 }

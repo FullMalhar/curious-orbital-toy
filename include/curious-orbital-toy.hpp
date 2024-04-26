@@ -7,6 +7,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+
 #include <memory>
 #include <vector>
 
@@ -31,7 +34,7 @@ namespace cot
     /**
      * @brief Returns the next body in the configuration file
     */
-    unsigned int cfgGetNextBody(math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
+    unsigned int cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
     
     // Physics engine
     class Engine
