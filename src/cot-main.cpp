@@ -2,10 +2,6 @@
 // Malhar Palkar
 #include <curious-orbital-toy.hpp>
 
-#include <spdlog/spdlog.h>
-
-#include <spdlog/sinks/basic_file_sink.h>
-
 #include <chrono>
 
 int main(int argc, char **argv)
