@@ -1,6 +1,10 @@
 # Compiled file
 cot
 
+# Operating files
+cot.csv
+cot.log
+
 # VS code
 .vscode
 
