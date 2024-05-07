@@ -8,7 +8,7 @@
 static std::string sConfig;
 static std::stringstream strConfig;
 
-unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
+unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
 {
     // Check if configuration file has been read
     if (sConfig.length() <= 0)
@@ -48,19 +48,21 @@ unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, math_t&
         {
             vTokens.push_back(cLine.substr(0, pos));
         }
-        if (vTokens.size() != 5)
+        if (vTokens.size() != 6)
         {
             logger->error("Incorrectly read {0:d} tokens.", vTokens.size());
             return 0;
         }
     
         // Extract body data
-        out_mass = std::stof(vTokens[0]);
-        out_pos.x = std::stof(vTokens[1]);
-        out_pos.y = std::stof(vTokens[2]);
-        out_vel.x = std::stof(vTokens[3]);
-        out_vel.y = std::stof(vTokens[4]);
-        logger->debug("Read mass {:.2f} init position ({:.2f},{:.2f}) init velocity ({:.2f},{:.2f})", 
+        out_name = vTokens[0];
+        out_mass = std::stof(vTokens[1]);
+        out_pos.x = std::stof(vTokens[2]);
+        out_pos.y = std::stof(vTokens[3]);
+        out_vel.x = std::stof(vTokens[4]);
+        out_vel.y = std::stof(vTokens[5]);
+        logger->debug(std::string("Read mass '") + out_name + 
+            std::string("' {:.2f} init position ({:.2f},{:.2f}) init velocity ({:.2f},{:.2f})"), 
             out_mass, out_pos.x, out_pos.y, out_vel.x, out_vel.y);
         return 1;
     }

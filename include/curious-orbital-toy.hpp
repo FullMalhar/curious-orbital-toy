@@ -34,7 +34,7 @@ namespace cot
     /**
      * @brief Returns the next body in the configuration file
     */
-    unsigned int cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
+    unsigned int cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
     
     // Physics engine
     class Engine
