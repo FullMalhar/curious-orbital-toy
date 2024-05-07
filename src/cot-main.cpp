@@ -9,6 +9,7 @@ int main(int argc, char **argv)
     // Set up logger to be really verbose
     auto logger = spdlog::basic_logger_mt("logger", "cot.log");
     logger->set_level(spdlog::level::debug);
+    logger->info("Start of session.");
 
     // Create window objects
     sf::RenderWindow sfWindow(sf::VideoMode(800, 600), "Curious Orbital Toy");
@@ -45,6 +46,7 @@ int main(int argc, char **argv)
             {
             case sf::Event::Closed:
                 sfWindow.close();
+                logger->info("End of session.");
             default:
                 break;
             }
