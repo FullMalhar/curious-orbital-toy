@@ -129,13 +129,14 @@ void cot::Engine::draw(sf::RenderWindow& wind)
     }
 }
 
-void cot::Engine::addBody(math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel)
+void cot::Engine::addBody(std::string in_name, math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel)
 {
     // Create body based on mass and initial data
     body_t newBod;
     newBod.mass = in_mass;
     newBod.position = init_pos;
     newBod.velocity = init_vel;
+    newBod.name = in_name;
 
     // Setup body graphics object
     newBod.planet.setFillColor(sf::Color::Yellow);
@@ -159,4 +160,19 @@ void cot::Engine::addBody(math_t in_mass, sf::Vector2f init_pos, sf::Vector2f in
     this->vSystem.push_back(newBod);
 }
 
+std::vector<cot::state_t> cot::Engine::publish()
+{
+    std::vector<cot::state_t> vOut;
+    cot::state_t cState;
 
+    for (const auto& cBody : this->vSystem)
+    {
+        cState.mass = cBody.mass;
+        cState.name = cBody.name;
+        cState.position = cBody.position;
+        cState.velocity = cBody.velocity;
+        vOut.push_back(cState);
+    }
+
+    return vOut;
+}

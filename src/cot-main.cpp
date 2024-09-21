@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     std::string _s;
     while (cot::cfgGetNextBody(logger, _s, cfg_mass, cfg_pos, cfg_vel))
     {
-        pEng.addBody(cfg_mass, cfg_pos, cfg_vel);
+        pEng.addBody(_s, cfg_mass, cfg_pos, cfg_vel);
         logger->info(std::string("Added body '") + _s + 
             std::string("' with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2})."), 
             cfg_mass, cfg_pos.x, cfg_pos.y, cfg_vel.x, cfg_vel.y);
@@ -70,6 +70,9 @@ int main(int argc, char **argv)
 
         // Display next frame
         sfWindow.display();
+
+        // Publish if needed
+        cot::processPublish(pEng, tDelta.count(), logger);
     }
 
     return 0;
