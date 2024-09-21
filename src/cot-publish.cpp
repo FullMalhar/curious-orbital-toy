@@ -23,14 +23,15 @@ void cot::processPublish(Engine& eng, const math_t dt, std::shared_ptr<spdlog::l
     auto pStates = eng.publish();
 
     // Write published bodies to string
-    std::ostringstream ss_publish;
     for (const auto& cState : pStates)
     {
+        // Print format string to stream
+        std::ostringstream ss_publish;
         ss_publish << "Body '" << cState.name << "' with mass " << cState.mass;
         ss_publish << " has (x,y)=(" << cState.position.x << "," << cState.position.y;
-        ss_publish << ") and (dx,dy)/dt=(" << cState.velocity.x << "," << cState.velocity.y << ")" << std::endl;
-    }
+        ss_publish << ") and (dx,dy)/dt=(" << cState.velocity.x << "," << cState.velocity.y << ")";
 
-    // Send the current telemetry
-    logger->info(ss_publish.str());
+        // Dump to log stream
+        logger->info(ss_publish.str());
+    }
 }
