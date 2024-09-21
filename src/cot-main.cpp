@@ -2,19 +2,19 @@
 // Malhar Palkar
 #include <curious-orbital-toy.hpp>
 
-#include <spdlog/spdlog.h>
-
 #include <chrono>
 
 int main(int argc, char **argv)
 {
     // Set up logger to be really verbose
-    spdlog::set_level(spdlog::level::debug);
+    auto logger = spdlog::basic_logger_mt("logger", "cot.log");
+    logger->set_level(spdlog::level::debug);
+    logger->info("Start of session.");
 
     // Create window objects
     sf::RenderWindow sfWindow(sf::VideoMode(800, 600), "Curious Orbital Toy");
     sfWindow.setVerticalSyncEnabled(true);
-    spdlog::debug("Created window.");
+    logger->debug("Created window.");
 
     // Timing objects
     std::chrono::time_point<std::chrono::system_clock> tBegin, tEnd;
@@ -22,15 +22,17 @@ int main(int argc, char **argv)
 
     // Initialise engine
     cot::Engine pEng;
-    spdlog::debug("Initialised engine.");
+    logger->debug("Initialised engine.");
 
     // Add bodies from configuration
     cot::math_t cfg_mass;
     sf::Vector2f cfg_pos, cfg_vel;
-    while (cot::cfgGetNextBody(cfg_mass, cfg_pos, cfg_vel))
+    std::string _s;
+    while (cot::cfgGetNextBody(logger, _s, cfg_mass, cfg_pos, cfg_vel))
     {
-        pEng.addBody(cfg_mass, cfg_pos, cfg_vel);
-        spdlog::info("Added body with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2}).", 
+        pEng.addBody(_s, cfg_mass, cfg_pos, cfg_vel);
+        logger->info(std::string("Added body '") + _s + 
+            std::string("' with mass {:.2} initial position ({:.2},{:.2}) and initial velocity ({:.2},{:.2})."), 
             cfg_mass, cfg_pos.x, cfg_pos.y, cfg_vel.x, cfg_vel.y);
     }
 
@@ -46,6 +48,7 @@ int main(int argc, char **argv)
             {
             case sf::Event::Closed:
                 sfWindow.close();
+                logger->info("End of session.");
             default:
                 break;
             }
@@ -67,6 +70,9 @@ int main(int argc, char **argv)
 
         // Display next frame
         sfWindow.display();
+
+        // Publish if needed
+        cot::processPublish(pEng, tDelta.count(), logger);
     }
 
     return 0;
