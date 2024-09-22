@@ -2,7 +2,7 @@
 cot
 
 # Operating files
-*.csv
+cot.csv
 *.dat
 *.log
 
