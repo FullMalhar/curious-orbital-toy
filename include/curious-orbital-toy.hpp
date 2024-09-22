@@ -13,6 +13,9 @@
 #include <memory>
 #include <vector>
 
+// Number of persistence objects
+#define COT_PERSIST     400
+
 namespace cot
 {
     // Precision math datatype
@@ -30,8 +33,10 @@ namespace cot
     // Representation of a physical body
     typedef struct _body : _state
     {
-        sf::CircleShape     planet;     // Circular body object
-        sf::ConvexShape     arrow;      // Force vector arrow
+        sf::CircleShape     planet;                 // Circular body object
+        sf::ConvexShape     arrow;                  // Force vector arrow
+        sf::CircleShape     history[COT_PERSIST];   // Persistence history
+        std::size_t         stamps;                 // Number of stamps recorded in persistence history
     } body_t;
 
     // Representation of a list of bodies
