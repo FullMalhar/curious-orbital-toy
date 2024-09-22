@@ -76,6 +76,31 @@ void cot::Engine::update(const cot::math_t dt)
     // List of forces for each object in the system
     std::vector<sf::Vector2f> vForces(this->vSystem.size());
 
+    // Note position of each body in the scene for persistence history
+    for (auto& cBod : this->vSystem)
+    {
+        // Add new stamp
+        if (cBod.stamps < COT_PERSIST)
+            cBod.stamps++;
+
+        // Shift along stamp positions
+        // This is inefficient, could use start and end pointers instead
+        // Switch to virtual circular buffer
+        for (std::size_t i = (cBod.stamps - 1); i > 0; i--)
+        {
+            cBod.history[i].setPosition(cBod.history[i - 1].getPosition());
+        }
+
+        // Persist current position of body
+        cBod.history[0].setPosition(cBod.position);
+
+        // Update persistence object colours
+        for (std::size_t i = 0; i < cBod.stamps; i++)
+        {
+            cBod.history[i].setFillColor(sf::Color(255, 255, 255, 255 * (cBod.stamps - i - 1) / cBod.stamps));
+        }
+    }
+
     // Loop through each body combination in the scene
     for (std::size_t i = 0; i < this->vSystem.size(); i++)
     {
@@ -126,6 +151,10 @@ void cot::Engine::draw(sf::RenderWindow& wind)
         // Draw objects
         wind.draw(cBod.planet);
         wind.draw(cBod.arrow);
+
+        // Draw persistence history
+        for (std::size_t i = 0; i < cBod.stamps; i++)
+            wind.draw(cBod.history[i]);
     }
 }
 
@@ -156,6 +185,14 @@ void cot::Engine::addBody(std::string in_name, math_t in_mass, sf::Vector2f init
     newBod.arrow.setOrigin(0.0f, 0.0f);
     newBod.arrow.setScale(5.0f, 5.0f);
 
+    // Setup persistence history vertices
+    for (std::size_t i = 0; i < COT_PERSIST; i++)
+    {
+        newBod.history[i].setFillColor(sf::Color::White);
+        newBod.history[i].setRadius(1);
+    }
+    newBod.stamps = 0;
+
     // Add new body to vector
     this->vSystem.push_back(newBod);
 }
@@ -176,3 +213,4 @@ std::vector<cot::state_t> cot::Engine::publish()
 
     return vOut;
 }
+
