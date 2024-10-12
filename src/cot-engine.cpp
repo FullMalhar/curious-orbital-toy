@@ -3,6 +3,7 @@
 #include <curious-orbital-toy.hpp>
 
 #include <ctgmath>
+#include <sstream>
 
 /**
  * @brief Calculates the gravitational attraction force between 2 bodies
@@ -69,6 +70,15 @@ inline cot::math_t forceAngle(const sf::Vector2f& fVect)
 inline cot::math_t mass2rad(cot::math_t in_mass)
 {
     return 20.0f * std::log((in_mass / 2.0f) + 1.0f);
+}
+
+cot::Engine::Engine(sf::Font& metrFont)
+{
+    // Setup metrics text object
+    this->sfTxtMetrics.setFont(metrFont);
+    this->sfTxtMetrics.setCharacterSize(30);
+    this->sfTxtMetrics.setFillColor(sf::Color::White);
+    this->sfTxtMetrics.setStyle(sf::Text::Bold);
 }
 
 void cot::Engine::update(const cot::math_t dt)
@@ -141,6 +151,15 @@ void cot::Engine::update(const cot::math_t dt)
             this->vSystem[i].planet.getRadius() * std::cos(forceVectorAngle), 
             this->vSystem[i].planet.getRadius() * std::sin(forceVectorAngle));
     }
+
+    // Calculate framerate
+    cot::math_t fr = 1.0f / dt;
+
+    // Generate metrics text
+    std::ostringstream strMets;
+    strMets.precision(0);
+    strMets << "FPS: " << std::fixed << std::abs(fr);
+    this->sfTxtMetrics.setString(strMets.str());
 }
 
 void cot::Engine::draw(sf::RenderWindow& wind)
@@ -156,6 +175,9 @@ void cot::Engine::draw(sf::RenderWindow& wind)
         for (std::size_t i = 0; i < cBod.stamps; i++)
             wind.draw(cBod.history[i]);
     }
+
+    // Draw metrics text
+    wind.draw(this->sfTxtMetrics);
 }
 
 void cot::Engine::addBody(std::string in_name, math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel)

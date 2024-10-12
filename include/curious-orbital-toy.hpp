@@ -55,7 +55,16 @@ namespace cot
         // Vector of all bodies and their corresponding shapes representing the system
         system_t vSystem;
 
+        // Metrics text object
+        sf::Text sfTxtMetrics;
+
     public:
+
+        /**
+         * @brief Initializes a new engine
+         * @param metrFont Font to use when printing metrics
+        */
+        Engine(sf::Font& metrFont);
 
         /**
          * @brief Adds a body to the physics engine
