@@ -89,6 +89,26 @@ namespace cot
      * @brief Handles the publishing from an engine
     */
    void processPublish(Engine& eng, const math_t dt, std::shared_ptr<spdlog::logger> logger);
+
+    namespace metrics
+    {
+        /**
+         * Sets up the metrics calculations
+        */
+        bool setup();
+
+        /**
+         * @brief Allows the metrics calculations to update
+         * @param dt Time since the update function was last called
+        */
+        void update(const cot::math_t dt);
+
+        /**
+         * @brief Draws the on-screen metrics
+         * @param wind Reference to drawing window
+        */
+        void draw(sf::RenderWindow& wind);
+    }
 }
 
 #endif // __CURIOUS_ORBITAL_TOY_HPP

@@ -5,6 +5,7 @@ cot
 cot.csv
 *.dat
 *.log
+*.ttf
 
 # VS code
 .vscode

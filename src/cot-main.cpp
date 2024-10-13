@@ -20,7 +20,14 @@ int main(int argc, char **argv)
     std::chrono::time_point<std::chrono::system_clock> tBegin, tEnd;
     tBegin = std::chrono::system_clock::now();
 
-    // Initialise engine
+    // Prepare metrics
+    if (!cot::metrics::setup())
+    {
+        logger->error("Unable to prepare metrics.");
+        return 0;
+    }
+
+    // Initialize engine
     cot::Engine pEng;
     logger->debug("Initialised engine.");
 
@@ -58,21 +65,24 @@ int main(int argc, char **argv)
         tEnd = std::chrono::system_clock::now();
         std::chrono::duration<cot::math_t, std::ratio<1, 1>> tDelta = tEnd - tBegin;
         tBegin = tEnd;
+        cot::math_t dt = tDelta.count();
 
-        // Update physics engine
-        pEng.update(tDelta.count());
+        // Update physics engine and metrics
+        pEng.update(dt);
+        cot::metrics::update(dt);
 
         // Clear window in preparation to display next frame
         sfWindow.clear(sf::Color::Black);
 
         // Draw new frame
         pEng.draw(sfWindow);
+        cot::metrics::draw(sfWindow);
 
         // Display next frame
         sfWindow.display();
 
         // Publish if needed
-        cot::processPublish(pEng, tDelta.count(), logger);
+        cot::processPublish(pEng, dt, logger);
     }
 
     return 0;
