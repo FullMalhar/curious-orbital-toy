@@ -20,16 +20,15 @@ int main(int argc, char **argv)
     std::chrono::time_point<std::chrono::system_clock> tBegin, tEnd;
     tBegin = std::chrono::system_clock::now();
 
-    // Load metrics font 
-    sf::Font fntTxtMetrics;
-    if (!fntTxtMetrics.loadFromFile("cot.ttf"))
+    // Prepare metrics
+    if (!cot::metrics::setup())
     {
-        logger->error("Unable to load metrics font.");
+        logger->error("Unable to prepare metrics.");
         return 0;
     }
 
     // Initialize engine
-    cot::Engine pEng(fntTxtMetrics);
+    cot::Engine pEng;
     logger->debug("Initialised engine.");
 
     // Add bodies from configuration
@@ -68,14 +67,16 @@ int main(int argc, char **argv)
         tBegin = tEnd;
         cot::math_t dt = tDelta.count();
 
-        // Update physics engine
+        // Update physics engine and metrics
         pEng.update(dt);
+        cot::metrics::update(dt);
 
         // Clear window in preparation to display next frame
         sfWindow.clear(sf::Color::Black);
 
         // Draw new frame
         pEng.draw(sfWindow);
+        cot::metrics::draw(sfWindow);
 
         // Display next frame
         sfWindow.display();

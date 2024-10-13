@@ -3,9 +3,6 @@
 #include <curious-orbital-toy.hpp>
 
 #include <ctgmath>
-#include <sstream>
-#include <sys/resource.h>
-#include <unistd.h>
 
 /**
  * @brief Calculates the gravitational attraction force between 2 bodies
@@ -72,15 +69,6 @@ inline cot::math_t forceAngle(const sf::Vector2f& fVect)
 inline cot::math_t mass2rad(cot::math_t in_mass)
 {
     return 20.0f * std::log((in_mass / 2.0f) + 1.0f);
-}
-
-cot::Engine::Engine(sf::Font& metrFont)
-{
-    // Setup metrics text object
-    this->sfTxtMetrics.setFont(metrFont);
-    this->sfTxtMetrics.setCharacterSize(30);
-    this->sfTxtMetrics.setFillColor(sf::Color::White);
-    this->sfTxtMetrics.setStyle(sf::Text::Bold);
 }
 
 void cot::Engine::update(const cot::math_t dt)
@@ -153,39 +141,6 @@ void cot::Engine::update(const cot::math_t dt)
             this->vSystem[i].planet.getRadius() * std::cos(forceVectorAngle), 
             this->vSystem[i].planet.getRadius() * std::sin(forceVectorAngle));
     }
-
-    // Calculate averaging framerate
-    static const std::size_t nFr = 100;
-    static cot::math_t fr[nFr];
-    for (std::size_t i = nFr - 1; i > 0; i--)
-    {
-        fr[i] = fr[i - 1];
-    }
-    fr[0] = std::abs(1.0f / dt);
-    cot::math_t fr_avg = 0.0f;
-    for (std::size_t i = 0; i < nFr; i++)
-    {
-        fr_avg += fr[i];
-    }
-    fr_avg /= static_cast<cot::math_t>(nFr);
-
-    // Calculate current RAM usage
-    static std::size_t cRam = 0;
-    long rss = 0L;
-    FILE* fp = fopen("/proc/self/statm", "r");
-    if (fp)
-    {
-        fscanf( fp, "%*s%ld", &rss );
-        fclose(fp);
-    }
-    std::size_t mem = (size_t)rss * (size_t)sysconf( _SC_PAGESIZE) / (1024U * 1024U);
-
-    // Generate metrics text
-    std::ostringstream strMets;
-    strMets.precision(0);
-    strMets << "RAM: " << std::fixed << mem << "MB" << '\t';
-    strMets << "FPS: " << std::fixed << std::abs(fr_avg);
-    this->sfTxtMetrics.setString(strMets.str());
 }
 
 void cot::Engine::draw(sf::RenderWindow& wind)
@@ -201,9 +156,6 @@ void cot::Engine::draw(sf::RenderWindow& wind)
         for (std::size_t i = 0; i < cBod.stamps; i++)
             wind.draw(cBod.history[i]);
     }
-
-    // Draw metrics text
-    wind.draw(this->sfTxtMetrics);
 }
 
 void cot::Engine::addBody(std::string in_name, math_t in_mass, sf::Vector2f init_pos, sf::Vector2f init_vel)
