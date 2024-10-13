@@ -153,12 +153,24 @@ void cot::Engine::update(const cot::math_t dt)
     }
 
     // Calculate framerate
-    cot::math_t fr = 1.0f / dt;
+    static const std::size_t nFr = 100;
+    static cot::math_t fr[nFr];
+    for (std::size_t i = nFr - 1; i > 0; i--)
+    {
+        fr[i] = fr[i - 1];
+    }
+    fr[0] = std::abs(1.0f / dt);
+    cot::math_t fr_avg = 0.0f;
+    for (std::size_t i = 0; i < nFr; i++)
+    {
+        fr_avg += fr[i];
+    }
+    fr_avg /= static_cast<cot::math_t>(nFr);
 
     // Generate metrics text
     std::ostringstream strMets;
     strMets.precision(0);
-    strMets << "FPS: " << std::fixed << std::abs(fr);
+    strMets << "FPS: " << std::fixed << std::abs(fr_avg);
     this->sfTxtMetrics.setString(strMets.str());
 }
 
