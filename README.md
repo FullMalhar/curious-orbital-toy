@@ -33,5 +33,4 @@
 ### Telemetry
 - Transfer current telemetry readout from log file to dat file dump
 - Live telemetry readout (table of bodies with XY positions and velocities)
-- CPU, GPU, RAM usage metrics
 
