@@ -13,9 +13,6 @@
 #include <memory>
 #include <vector>
 
-// Number of persistence objects
-#define COT_PERSIST     400
-
 namespace cot
 {
     // Precision math datatype
@@ -33,10 +30,10 @@ namespace cot
     // Representation of a physical body
     typedef struct _body : _state
     {
-        sf::CircleShape     planet;                 // Circular body object
-        sf::ConvexShape     arrow;                  // Force vector arrow
-        sf::CircleShape     history[COT_PERSIST];   // Persistence history
-        std::size_t         stamps;                 // Number of stamps recorded in persistence history
+        sf::CircleShape                 planet;     // Circular body object
+        sf::ConvexShape                 arrow;      // Force vector arrow
+        std::vector<sf::CircleShape>    history;    // Persistence history
+        std::size_t                     stamps;     // Number of stamps recorded in persistence history
     } body_t;
 
     // Representation of a list of bodies
@@ -55,7 +52,15 @@ namespace cot
         // Vector of all bodies and their corresponding shapes representing the system
         system_t vSystem;
 
+        // Number of persistence points
+        std::size_t nPersist;
+
     public:
+
+        /**
+         * @param nPerst Number of persistence points
+        */
+        Engine(const std::size_t nPerst);
 
         /**
          * @brief Adds a body to the physics engine
@@ -68,6 +73,7 @@ namespace cot
         /**
          * @brief Allows the physics engine to update force, velocity, and position of each body in the system
          * @param dt Time since the update function was last called
+         * @param n_persist Number of points to use for persistence
         */
         void update(const math_t dt);
 
@@ -87,15 +93,22 @@ namespace cot
     
     /**
      * @brief Handles the publishing from an engine
+     * @param eng Engine to publish
+     * @param dt Time elapsed since the last frame
+     * @param logger Reference to logging object
+     * @param interv Publishing interval (s)
     */
-   void processPublish(Engine& eng, const math_t dt, std::shared_ptr<spdlog::logger> logger);
+   void processPublish(Engine& eng, const math_t dt, std::shared_ptr<spdlog::logger> logger, const math_t interv);
 
     namespace metrics
     {
         /**
-         * Sets up the metrics calculations
+         * @brief Sets up the metrics calculations
+         * @param nFAvg Number of frames to average when calculating framerate (must be >1)
+         * @param nFCpu Calculate CPU and RAM usage every nFCpu frames
+         * @return Whether metrics setup was successful or not
         */
-        bool setup();
+        bool setup(const std::size_t nFAvg, const std::size_t nFCpu);
 
         /**
          * @brief Allows the metrics calculations to update

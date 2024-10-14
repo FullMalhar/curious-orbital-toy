@@ -71,6 +71,11 @@ inline cot::math_t mass2rad(cot::math_t in_mass)
     return 20.0f * std::log((in_mass / 2.0f) + 1.0f);
 }
 
+cot::Engine::Engine(const std::size_t nPerst)
+{
+    this->nPersist = nPerst;
+}
+
 void cot::Engine::update(const cot::math_t dt)
 {
     // List of forces for each object in the system
@@ -80,7 +85,7 @@ void cot::Engine::update(const cot::math_t dt)
     for (auto& cBod : this->vSystem)
     {
         // Add new stamp
-        if (cBod.stamps < COT_PERSIST)
+        if (cBod.stamps < this->nPersist)
             cBod.stamps++;
 
         // Shift along stamp positions
@@ -186,10 +191,12 @@ void cot::Engine::addBody(std::string in_name, math_t in_mass, sf::Vector2f init
     newBod.arrow.setScale(5.0f, 5.0f);
 
     // Setup persistence history vertices
-    for (std::size_t i = 0; i < COT_PERSIST; i++)
+    for (std::size_t i = 0; i < this->nPersist; i++)
     {
-        newBod.history[i].setFillColor(sf::Color::White);
-        newBod.history[i].setRadius(1);
+        sf::CircleShape sfc;
+        sfc.setFillColor(sf::Color::White);
+        sfc.setRadius(1);
+        newBod.history.push_back(sfc);
     }
     newBod.stamps = 0;
 

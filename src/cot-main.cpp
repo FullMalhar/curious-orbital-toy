@@ -24,14 +24,14 @@ int main(int argc, char **argv)
     tBegin = std::chrono::system_clock::now();
 
     // Prepare metrics
-    if (!cot::metrics::setup())
+    if (!cot::metrics::setup(prog_cfg.n_frames_avg, prog_cfg.n_frames_cpu))
     {
         logger->error("Unable to prepare metrics.");
         return 0;
     }
 
     // Initialize engine
-    cot::Engine pEng;
+    auto pEng = cot::Engine(prog_cfg.n_persist_pts);
     logger->debug("Initialised engine.");
 
     // Add bodies from configuration
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
         sfWindow.display();
 
         // Publish if needed
-        cot::processPublish(pEng, dt, logger);
+        cot::processPublish(pEng, dt, logger, prog_cfg.publish_interval);
     }
 
     return 0;

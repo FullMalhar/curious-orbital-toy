@@ -4,16 +4,13 @@
 
 #include <sstream>
 
-// How often to publish the system states
-static const cot::math_t param_publishInterval = 0.1f;
-
-void cot::processPublish(Engine& eng, const math_t dt, std::shared_ptr<spdlog::logger> logger)
+void cot::processPublish(Engine& eng, const math_t dt, std::shared_ptr<spdlog::logger> logger, const math_t interv)
 {
     static auto publish_timer = 0.0f;
 
     // Proceed only if the publish interval has passed
     publish_timer += dt;
-    if (publish_timer < param_publishInterval)
+    if (publish_timer < interv)
         return;
 
     // Reset publish interval timer

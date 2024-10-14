@@ -14,8 +14,15 @@ static sf::Text sfTxtMetrics;
 static clock_t lastCPU, lastSysCPU, lastUserCPU;
 static int numProcessors = 0;
 
-bool cot::metrics::setup()
+static std::size_t num_frames_avg = 0;
+static std::size_t num_frames_cpu = 0;
+
+bool cot::metrics::setup(const std::size_t nFAvg, const std::size_t nFCpu)
 {
+    // Assign configured parameters
+    num_frames_avg = nFAvg;
+    num_frames_cpu = nFCpu;
+
     // Load font to use
     if (!sfFntMetrics.loadFromFile("cot.ttf"))
         return false;
@@ -55,20 +62,20 @@ bool cot::metrics::setup()
 void cot::metrics::update(const cot::math_t dt)
 {
     // Calculate averaging framerate
-    static const std::size_t nFr = 100;
-    static cot::math_t fr[nFr];
-    for (std::size_t i = nFr - 1; i > 0; i--)
+    static const std::size_t num_frames_avg = 100;
+    static cot::math_t fr[num_frames_avg];
+    for (std::size_t i = num_frames_avg - 1; i > 0; i--)
     {
         fr[i] = fr[i - 1];
     }
     fr[0] = std::abs(1.0f / dt);
     cot::math_t fr_avg = 0.0f;
-    for (std::size_t i = 0; i < nFr; i++)
+    for (std::size_t i = 0; i < num_frames_avg; i++)
     {
         fr_avg += fr[i];
     }
-    fr_avg /= static_cast<cot::math_t>(nFr);
-
+    fr_avg /= static_cast<cot::math_t>(num_frames_avg);
+    
     // Calculate current RAM usage
     static std::size_t cRam = 0;
     long rss = 0L;
@@ -80,10 +87,9 @@ void cot::metrics::update(const cot::math_t dt)
     }
     std::size_t mem = (size_t)rss * (size_t)sysconf( _SC_PAGESIZE) / (1024U * 1024U);
 
-    // Calculate CPU usage percentage with a specified frame delay
     static cot::math_t cpu_usage = 0.0f;
-    static std::size_t cpu_usage_delay = 101;
-    if (cpu_usage_delay > 100)
+    static std::size_t cpu_usage_delay = num_frames_cpu + 1;
+    if (cpu_usage_delay > num_frames_cpu)
     {
         // Estimate CPU usage time
         tms tSample;
