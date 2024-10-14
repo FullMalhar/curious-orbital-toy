@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
+unsigned int cot::cfg::getNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
 {
     static std::string sConfig;
     static std::stringstream strConfig;

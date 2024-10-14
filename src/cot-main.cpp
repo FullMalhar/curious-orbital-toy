@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     cot::math_t cfg_mass;
     sf::Vector2f cfg_pos, cfg_vel;
     std::string _s;
-    while (cot::cfgGetNextBody(logger, _s, cfg_mass, cfg_pos, cfg_vel))
+    while (cot::cfg::getNextBody(logger, _s, cfg_mass, cfg_pos, cfg_vel))
     {
         pEng.addBody(_s, cfg_mass, cfg_pos, cfg_vel);
         logger->info(std::string("Added body '") + _s + 

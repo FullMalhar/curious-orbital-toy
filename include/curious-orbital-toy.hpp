@@ -38,11 +38,6 @@ namespace cot
 
     // Representation of a list of bodies
     typedef std::vector<cot::body_t> system_t;
-
-    /**
-     * @brief Returns the next body in the configuration file
-    */
-    unsigned int cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
     
     // Physics engine
     class Engine
@@ -141,6 +136,11 @@ namespace cot
          * @return Configuration object with the determined system configuration
         */
         config_t configure();
+
+        /**
+         * @brief Returns the next body in the configuration file
+        */
+        unsigned int getNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel);
     }    
 }
 
