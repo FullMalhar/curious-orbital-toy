@@ -6,6 +6,7 @@ cot.csv
 *.dat
 *.log
 *.ttf
+*.cfg
 
 # VS code
 .vscode
