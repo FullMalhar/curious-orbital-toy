@@ -11,8 +11,11 @@ int main(int argc, char **argv)
     logger->set_level(spdlog::level::debug);
     logger->info("Start of session.");
 
+    // Retrieve configuration to use
+    auto prog_cfg = cot::cfg::configure();
+
     // Create window objects
-    sf::RenderWindow sfWindow(sf::VideoMode(800, 600), "Curious Orbital Toy");
+    sf::RenderWindow sfWindow(sf::VideoMode(prog_cfg.init_wind_width, prog_cfg.init_wind_height), "Curious Orbital Toy");
     sfWindow.setVerticalSyncEnabled(true);
     logger->debug("Created window.");
 

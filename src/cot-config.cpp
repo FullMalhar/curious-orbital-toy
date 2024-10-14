@@ -5,11 +5,11 @@
 #include <fstream>
 #include <sstream>
 
-static std::string sConfig;
-static std::stringstream strConfig;
-
 unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, std::string& out_name, math_t& out_mass, sf::Vector2f& out_pos, sf::Vector2f& out_vel)
 {
+    static std::string sConfig;
+    static std::stringstream strConfig;
+    
     // Check if configuration file has been read
     if (sConfig.length() <= 0)
     {
@@ -70,3 +70,14 @@ unsigned int cot::cfgGetNextBody(std::shared_ptr<spdlog::logger> logger, std::st
     logger->debug("No bodies specified in remainder of config file.");
     return 0;
 }
+
+cot::cfg::config_t cot::cfg::configure()
+{
+    return config_t();
+}
+
+
+
+
+
+

@@ -109,6 +109,26 @@ namespace cot
         */
         void draw(sf::RenderWindow& wind);
     }
+
+    namespace cfg
+    {
+        // Program configuration
+        typedef struct _config
+        {
+            std::size_t  n_persist_pts      = 400;      // Number of points to use for persistence
+            std::size_t  n_frames_avg       = 100;      // Number of frames to use to calculate average framerate
+            std::size_t  n_frames_cpu       = 100;      // CPU usage calculated every nth frame    
+            cot::math_t  publish_interval   = 0.1f;     // How often to publish data (s)
+            unsigned int init_wind_width    = 800;      // Initial window width (pixels)
+            unsigned int init_wind_height   = 600;      // initial window height (pixels)
+        } config_t;
+
+        /**
+         * @brief Retrieves the program configuration or the precompiled defaults if none exists
+         * @return Configuration object with the determined system configuration
+        */
+        config_t configure();
+    }    
 }
 
 #endif // __CURIOUS_ORBITAL_TOY_HPP

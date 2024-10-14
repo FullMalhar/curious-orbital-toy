@@ -82,7 +82,7 @@ void cot::metrics::update(const cot::math_t dt)
 
     // Calculate CPU usage percentage with a specified frame delay
     static cot::math_t cpu_usage = 0.0f;
-    static std::size_t cpu_usage_delay = 11;
+    static std::size_t cpu_usage_delay = 101;
     if (cpu_usage_delay > 100)
     {
         // Estimate CPU usage time
