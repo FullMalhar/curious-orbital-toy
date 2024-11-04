@@ -12,9 +12,9 @@ HFILES = $(shell find $(INCDIR)/ -type f -name '*.h')
 CC = g++
 
 # Flags
-CFLAGS = -I$(INCDIR)
+CFLAGS = -I$(INCDIR) -D SPDLOG_COMPILED_LIB
 OBJS = $(patsubst %.cpp,%.o,$(CFILES))
-LIBS = -lm -lsfml-graphics -lsfml-window -lsfml-system -lfmt
+LIBS = -lm -lsfml-graphics -lsfml-window -lsfml-system -lfmt -lspdlog
 
 %.o: %.cpp $(HFILES)
 	$(CC) -c -o $@ $< $(CFLAGS)
